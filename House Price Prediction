@@ -1,0 +1,44 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+from sklearn.linear_model import LinearRegression
+
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import mean_squared_error
+
+
+
+houses = pd.read_csv("kc_house_data.csv")
+houses.head()
+
+houses.isnull().sum()
+
+
+# create x and y
+
+x = houses['sqft_living'] # predictor
+y = houses.price # response
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.5)
+
+
+# instantiate, fit
+#x_train.values.reshape(-1,1)
+linreg = LinearRegression()
+#linreg.fit(x_train, y_train)
+linreg.fit(x_train.values.reshape(-1,1), y_train.values.reshape(-1,1))
+
+print (linreg.intercept_)
+print (linreg.coef_)
+
+mse = mean_squared_error(y_test, linreg.predict(x_test.values.reshape(-1,1)))
+np.sqrt(mse)
+
+print(linreg.score(x_test.values.reshape(-1,1), y_test.values.reshape(-1,1)))
+
+from sklearn import metrics
+
+# Model Accuracy: how often is the classifier correct?
+print("Accuracy:",linreg.score(x_test.values.reshape(-1,1), linreg.predict(x_test.values.reshape(-1,1))))
